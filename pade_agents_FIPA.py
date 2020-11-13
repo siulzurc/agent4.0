@@ -4,6 +4,7 @@
 # PADE
 from pade.misc.utility import display_message, start_loop, call_later
 from pade.core.agent import Agent
+from pade.core.new_ams import AMS
 from pade.acl.aid import AID
 from sys import argv
 from pade.behaviours.protocols import TimedBehaviour
@@ -12,6 +13,7 @@ from pade.behaviours.protocols import TimedBehaviour
 from aas import model  # Import all PYI40AAS classes from the model package
 import aas.adapter.json
 import aas.adapter.xml
+import gc
 
 ## Serialization
 import pickle
@@ -110,6 +112,13 @@ class ResourceAgent(Agent):
         display_message(self.aid.localname, '(RA) Message received from {}'.format(message.sender.name))
 
         display_message(self.aid.localname, '(RA) Message: {}'.format(message.content))
+        
+class ManagerAgent(Agent):
+    def __init__(self, aid):
+        super(ManagerAgent, self).__init__(aid=aid)
+        display_message(self.aid.localname, 'Manager Agent initialized!')
+        display_message(self.aid.localname, 'Manager Init finalized')
+
 
 
 #Simple Program: 2 agents
@@ -120,9 +129,17 @@ if __name__ == '__main__':
     port = 20000
     agent_process = ProcessAgent(AID(name="Process_Agent_Luis@localhost:{}".format(55200)))
     agent_resource = ResourceAgent(AID(name="Resource_Agent_Luis@localhost:{}".format(8100)))
+    agent_manager = ResourceAgent(AID(name="Manager_Agent_Luis@localhost:{}".format(8200)))
     #agent_process.debug =True
     #agent_resource.debug =True
     agents.append(agent_process)
     agents.append(agent_resource)
+    agents.append(agent_manager)
+    #ams_agent_2 = AMS()
+    #agents.append(ams_agent_2)
+    #print(agents)
+    
+
+
 
     start_loop(agents)
