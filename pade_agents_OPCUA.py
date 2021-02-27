@@ -19,6 +19,31 @@ import gc
 import pickle
 from pade.acl.messages import ACLMessage
 
+## OPC UA
+from opcua import Client
+from opcua import ua
+
+import logging
+import time
+
+## OPC UA SubHandler
+class SubHandler(object):
+
+    """
+    Subscription Handler. To receive events from server for a subscription
+    data_change and event methods are called directly from receiving thread.
+    Do not do expensive, slow or network operation there. Create another
+    thread if you need to do such a thing
+    """
+
+    def datachange_notification(self, node, val, data):
+        print("New data change event", node, val)
+
+    def event_notification(self, event):
+        print("New event", event)
+
+
+
 class TemporalBehavior(TimedBehaviour):
     def __init__(self,agent,time):
         super(TemporalBehavior,self).__init__(agent,time)
@@ -112,7 +137,7 @@ class ResourceAgent(Agent):
         display_message(self.aid.localname, '(RA) Message received from {}'.format(message.sender.name))
 
         display_message(self.aid.localname, '(RA) Message: {}'.format(message.content))
-        
+
 class ManagerAgent(Agent):
     def __init__(self, aid):
         super(ManagerAgent, self).__init__(aid=aid)
@@ -127,19 +152,92 @@ if __name__ == '__main__':
     agents = list()
     #port = int(argv[1]) + c ## Args
     port = 20000
-    agent_process = ProcessAgent(AID(name="Process_Agent_Luis@localhost:{}".format(55200)))
-    agent_resource = ResourceAgent(AID(name="Resource_Agent_Luis@localhost:{}".format(8100)))
-    agent_manager = ResourceAgent(AID(name="Manager_Agent_Luis@localhost:{}".format(8200)))
+    #agent_process = ProcessAgent(AID(name="Process_Agent_Generic@localhost:{}".format(55200)))
+    #agent_resource = ResourceAgent(AID(name="Resource_Agent_Generic@localhost:{}".format(8100)))
+    #agent_manager = ResourceAgent(AID(name="Manager_Agent_Generic@localhost:{}".format(8200)))
+    agent_RATransportB = ResourceAgent(AID(name="Resource_Agent_TransportB@localhost:{}".format(8101)))
+    agent_RATransportG = ResourceAgent(AID(name="Resource_Agent_TransportG@localhost:{}".format(8102)))
+    agent_RAPickAndPlace = ResourceAgent(AID(name="Resource_Agent_PickAndPlace@localhost:{}".format(8103)))
+    agent_RAFillingB = ResourceAgent(AID(name="Resource_Agent_FillingB@localhost:{}".format(8104)))
+    agent_RAFillingG = ResourceAgent(AID(name="Resource_Agent_FillingG@localhost:{}".format(8105)))
+    agent_PAProducingB = ResourceAgent(AID(name="Process_Agent_ProducingB@localhost:{}".format(55201)))
+    agent_PAProducingG = ResourceAgent(AID(name="Process_Agent_ProducingG@localhost:{}".format(55202)))
+    agent_PAProducingO = ResourceAgent(AID(name="Process_Agent_ProducingO@localhost:{}".format(55203)))
+    agent_AMSdt1 = ResourceAgent(AID(name="Agent_Manager_dt1@localhost:{}".format(8201)))
+    agent_AMSdt2 = ResourceAgent(AID(name="Agent_Manager_dt2@localhost:{}".format(8202)))
+    agent_AMSdt3 = ResourceAgent(AID(name="Agent_Manager_dt3@localhost:{}".format(8203)))
     #agent_process.debug =True
     #agent_resource.debug =True
-    agents.append(agent_process)
-    agents.append(agent_resource)
-    agents.append(agent_manager)
+    #agents.append(agent_process)
+    #agents.append(agent_resource)
+    #agents.append(agent_manager)
+    agents.append(agent_RATransportB)
+    agents.append(agent_RATransportG)
+    agents.append(agent_RAPickAndPlace)
+    agents.append(agent_RAFillingB)
+    agents.append(agent_RAFillingG)
+    agents.append(agent_PAProducingB)
+    agents.append(agent_PAProducingG)
+    agents.append(agent_PAProducingO)
+    agents.append(agent_AMSdt1)
+    agents.append(agent_AMSdt2)
+    agents.append(agent_AMSdt3)
     #ams_agent_2 = AMS()
     #agents.append(ams_agent_2)
     #print(agents)
-    
 
 
+    ## OPC UA Client
+    logging.basicConfig(level=logging.WARN)
+    #logger = logging.getLogger("KeepAlive")
+    #logger.setLevel(logging.DEBUG)
 
+    client = Client("opc.tcp://0.0.0.0:4840/tum/ai40server/")
+    try:
+        client.connect()
+        client.load_type_definitions()  # load definition of server specific structures/extension objects
+
+        # Client has a few methods to get proxy to UA nodes that should always be in address space such as Root or Objects
+        root = client.get_root_node()
+        print("Root node is: ", root)
+        objects = client.get_objects_node()
+        print("Objects node is: ", objects)
+
+        # Node objects have methods to read and write node attributes as well as browse or populate address space
+        print("Children of root are: ", root.get_children())
+
+        # gettting our namespace idx
+        uri = "tum/ai40"
+        idx = client.get_namespace_index(uri)
+
+        # using child definitions
+        generic_node = root.get_child(['0:Objects', '2:ProcessFolder', '2:generic_model_1', '2:generic_analog_variable'])
+
+
+        ## using identifier definition
+        generic_node_2 = client.get_node("ns=2;i=9")
+
+        # subscribing to a variable node
+        handler = SubHandler()
+        sub = client.create_subscription(500, handler)
+        sub.subscribe_data_change(generic_node)
+        sub.subscribe_data_change(generic_node_2)
+
+
+        time.sleep(0.1)
+
+        # we can also subscribe to events from server
+        sub.subscribe_events()
+        # sub.unsubscribe(handle)
+        # sub.delete()
+
+        # calling a method on server
+        #res = obj.call_method("{}:multiply".format(idx), 3, "klk")
+        #print("method result is: ", res)
+
+        # IPython embed to enable interactive shell
+        #embed()
+
+    finally:
+        client.disconnect()
     start_loop(agents)
