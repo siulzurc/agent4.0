@@ -26,7 +26,38 @@ from opcua import ua
 import logging
 import time
 
+
+
+
 ## OPC UA SubHandler
+
+
+set_blue_value = 0
+set_green_value = 0
+order_no_value = 0
+add1_value = 0
+add2_value = 0
+blue_value = 0
+green_value = 0
+free_value = 0
+availability_value = 0
+performance_value = 0
+quality_value = 0
+oee_value = 0
+orderWIP_value = 0
+achieveB_value = 0
+achieveG_value = 0
+order_achieved_value = 0
+perform_time_value = 0
+active_pade_value = 0
+
+## OPC UA Client
+logging.basicConfig(level=logging.WARN)
+#logger = logging.getLogger("KeepAlive")
+#logger.setLevel(logging.DEBUG)
+
+client = Client("opc.tcp://192.168.0.30:53880/")
+
 class SubHandler(object):
 
     """
@@ -37,100 +68,300 @@ class SubHandler(object):
     """
 
     def datachange_notification(self, node, val, data):
+        global client
+        global set_blue_value
+        global set_green_value
+        global order_no_value
+        global add1_value
+        global add2_value
+        global blue_value
+        global green_value
+        global free_value
+        global availability_value
+        global performance_value
+        global quality_value
+        global oee_value
+        global orderWIP_value
+        global achieveB_value
+        global achieveG_value
+        global order_achieved_value
+        global perform_time_value
+        global active_pade_value
         print("New data change event", node, val)
+
+        set_blue_uanode = client.get_node("ns=1;s=SetBlue")
+        set_green_uanode = client.get_node("ns=1;s=SetGreen")
+        order_no_uanode = client.get_node("ns=1;s=orderNo")
+        add1_uanode = client.get_node("ns=1;s=Add1")
+        add2_uanode = client.get_node("ns=1;s=Add2")
+        blue_uanode = client.get_node("ns=1;s=Blue")
+        green_uanode = client.get_node("ns=1;s=Green")
+        free_uanode = client.get_node("ns=1;s=Free")
+        availability_uanode = client.get_node("ns=1;s=Availability")
+        performance_uanode = client.get_node("ns=1;s=Performance")
+        quality_uanode = client.get_node("ns=1;s=Quality")
+        oee_uanode = client.get_node("ns=1;s=OEE")
+        orderWIP_uanode = client.get_node("ns=1;s=orderWIP")
+        achieveB_uanode = client.get_node("ns=1;s=AchieveB")
+        achieveG_uanode = client.get_node("ns=1;s=AchieveG")
+        order_achieved_uanode = client.get_node("ns=1;s=orderAchieved")
+        perform_time_uanode = client.get_node("ns=1;s=PerformTime")
+        active_pade_uanode = client.get_node("ns=1;s=activePADE")
+
+        set_blue_value = set_blue_uanode.get_value()
+        set_green_value = set_green_uanode.get_value()
+        order_no_value = order_no_uanode.get_value()
+        add1_value = add1_uanode.get_value()
+        add2_value = add2_uanode.get_value()
+        blue_value = blue_uanode.get_value()
+        green_value = green_uanode.get_value()
+        free_value = free_uanode.get_value()
+        availability_value = availability_uanode.get_value()
+        performance_value = performance_uanode.get_value()
+        quality_value = quality_uanode.get_value()
+        oee_value = oee_uanode.get_value()
+        orderWIP_value = orderWIP_uanode.get_value()
+        achieveB_value = achieveB_uanode.get_value()
+        achieveG_value = achieveG_uanode.get_value()
+        order_achieved_value = order_achieved_uanode.get_value()
+        perform_time_value = perform_time_uanode.get_value()
+        active_pade_value = active_pade_uanode.get_value()
 
     def event_notification(self, event):
         print("New event", event)
 
 
 
-class TemporalBehavior(TimedBehaviour):
+try:
+    client.connect()
+    client.load_type_definitions()  # load definition of server specific structures/extension objects
+
+    # Client has a few methods to get proxy to UA nodes that should always be in address space such as Root or Objects
+    root = client.get_root_node()
+    print("Root node is: ", root)
+    objects = client.get_objects_node()
+    print("Objects node is: ", objects)
+
+    # Node objects have methods to read and write node attributes as well as browse or populate address space
+    print("Children of root are: ", root.get_children())
+
+    # gettting our namespace idx
+    uri = ""
+    idx = client.get_namespace_index(uri)
+
+    ## variables
+    set_blue_uanode = client.get_node("ns=1;s=SetBlue")
+    set_green_uanode = client.get_node("ns=1;s=SetGreen")
+    order_no_uanode = client.get_node("ns=1;s=orderNo")
+    add1_uanode = client.get_node("ns=1;s=Add1")
+    add2_uanode = client.get_node("ns=1;s=Add2")
+    blue_uanode = client.get_node("ns=1;s=Blue")
+    green_uanode = client.get_node("ns=1;s=Green")
+    free_uanode = client.get_node("ns=1;s=Free")
+    availability_uanode = client.get_node("ns=1;s=Availability")
+    performance_uanode = client.get_node("ns=1;s=Performance")
+    quality_uanode = client.get_node("ns=1;s=Quality")
+    oee_uanode = client.get_node("ns=1;s=OEE")
+    orderWIP_uanode = client.get_node("ns=1;s=orderWIP")
+    achieveB_uanode = client.get_node("ns=1;s=AchieveB")
+    achieveG_uanode = client.get_node("ns=1;s=AchieveG")
+    order_achieved_uanode = client.get_node("ns=1;s=orderAchieved")
+    perform_time_uanode = client.get_node("ns=1;s=PerformTime")
+    active_pade_uanode = client.get_node("ns=1;s=activePADE")
+
+    # subscribing to a variable node
+    handler = SubHandler()
+    sub = client.create_subscription(500, handler)
+    sub.subscribe_data_change(set_blue_uanode)
+    sub.subscribe_data_change(set_green_uanode)
+    sub.subscribe_data_change(order_no_uanode)
+    sub.subscribe_data_change(add1_uanode)
+    sub.subscribe_data_change(add2_uanode)
+    sub.subscribe_data_change(blue_uanode)
+    sub.subscribe_data_change(green_uanode)
+    sub.subscribe_data_change(free_uanode)
+    sub.subscribe_data_change(availability_uanode)
+    sub.subscribe_data_change(performance_uanode)
+    sub.subscribe_data_change(quality_uanode)
+    sub.subscribe_data_change(oee_uanode)
+    sub.subscribe_data_change(orderWIP_uanode)
+    sub.subscribe_data_change(achieveB_uanode)
+    sub.subscribe_data_change(achieveG_uanode)
+    sub.subscribe_data_change(order_achieved_uanode)
+    sub.subscribe_data_change(perform_time_uanode)
+    sub.subscribe_data_change(active_pade_uanode)
+
+
+    time.sleep(0.1)
+
+    # we can also subscribe to events from server
+    sub.subscribe_events()
+    # sub.unsubscribe(handle)
+    # sub.delete()
+
+    # calling a method on server
+    #res = obj.call_method("{}:multiply".format(idx), 3, "klk")
+    #print("method result is: ", res)
+
+    # IPython embed to enable interactive shell
+    #embed()
+
+finally:
+    client.disconnect()
+
+
+
+########################## Agents ###############################
+
+class TemporalProductAgentBehavior(TimedBehaviour):
     def __init__(self,agent,time):
-        super(TemporalBehavior,self).__init__(agent,time)
+        super(TemporalProductAgentBehavior,self).__init__(agent,time)
 
     def on_time(self):
-        super(TemporalBehavior,self).on_time()
-        display_message(self.agent.aid.localname, '(PA) Sending message TB...')
-        message = ACLMessage(ACLMessage.INFORM)
-        message.set_protocol(ACLMessage.FIPA_CONTRACT_NET_PROTOCOL)
-        message.add_receiver(AID('Resource_Agent_Luis'))
-        message.set_content('Prueba TB')
-        self.agent.send(message)
+        super(TemporalProductAgentBehavior,self).on_time()
+        global client
+        global set_blue_value
+        global set_green_value
+        global order_no_value
+        global add1_value
+        global add2_value
+        global blue_value
+        global green_value
+        global free_value
+        global availability_value
+        global performance_value
+        global quality_value
+        global oee_value
+        global orderWIP_value
+        global achieveB_value
+        global achieveG_value
+        global order_achieved_value
+        global perform_time_value
+        global active_pade_value
+        display_message(self.agent.aid.localname, '(PA) Temporal Behavior')
+        #message = ACLMessage(ACLMessage.INFORM)
+        #message.set_protocol(ACLMessage.FIPA_CONTRACT_NET_PROTOCOL)
+        #message.add_receiver(AID('Agent_name'))
+        #message.set_content('content')
+        #self.agent.send(message)
+        #Business logic PAs
+        #client.get_node("ns=1;s=SetBlue").set_value(15)
+
+class TemporalResourceAgentBehavior(TimedBehaviour):
+    def __init__(self,agent,time):
+        super(TemporalResourceAgentBehavior,self).__init__(agent,time)
+
+    def on_time(self):
+        super(TemporalResourceAgentBehavior,self).on_time()
+        global client
+        global set_blue_value
+        global set_green_value
+        global order_no_value
+        global add1_value
+        global add2_value
+        global blue_value
+        global green_value
+        global free_value
+        global availability_value
+        global performance_value
+        global quality_value
+        global oee_value
+        global orderWIP_value
+        global achieveB_value
+        global achieveG_value
+        global order_achieved_value
+        global perform_time_value
+        global active_pade_value
+        display_message(self.agent.aid.localname, '(RA) Temporal Behavior')
+        #message = ACLMessage(ACLMessage.INFORM)
+        #message.set_protocol(ACLMessage.FIPA_CONTRACT_NET_PROTOCOL)
+        #message.add_receiver(AID('Agent_name'))
+        #message.set_content('content')
+        #self.agent.send(message)
+        #Business logic RAs
+        #client.get_node("ns=1;s=SetBlue").set_value(15)
+
+class TemporalManagerAgentBehavior(TimedBehaviour):
+    def __init__(self,agent,time):
+        super(TemporalManagerAgentBehavior,self).__init__(agent,time)
+
+    def on_time(self):
+        super(TemporalManagerAgentBehavior,self).on_time()
+        global client
+        global set_blue_value
+        global set_green_value
+        global order_no_value
+        global add1_value
+        global add2_value
+        global blue_value
+        global green_value
+        global free_value
+        global availability_value
+        global performance_value
+        global quality_value
+        global oee_value
+        global orderWIP_value
+        global achieveB_value
+        global achieveG_value
+        global order_achieved_value
+        global perform_time_value
+        global active_pade_value
+        display_message(self.agent.aid.localname, '(MA) Temporal Behavior')
+        #message = ACLMessage(ACLMessage.INFORM)
+        #message.set_protocol(ACLMessage.FIPA_CONTRACT_NET_PROTOCOL)
+        #message.add_receiver(AID('Agent_name'))
+        #message.set_content('content')
+        #self.agent.send(message)
+        #Business logic MAs
+        #client.get_node("ns=1;s=SetBlue").set_value(15)
+
 
 #Defining type of agents: Reading the AASX file
 class ProcessAgent(Agent):
     def __init__(self, aid):
         super(ProcessAgent, self).__init__(aid=aid)
-        temp_behavior = TemporalBehavior(self,5.0)
-        self.behaviours.append(temp_behavior)
-        self.receiver_aid = "Resource_Agent_Luis"
+        temp_behavior_pa = TemporalProductAgentBehavior(self,1.0)
+        self.behaviours.append(temp_behavior_pa)
 
         display_message(self.aid.localname, 'Process Agent initialized!')
-        #Library to create AASX file
-        identifier = model.Identifier('https://acplt.org/Simple_Submodel', model.IdentifierType.IRI)
-        submodel = model.Submodel(identification=identifier)
-
-        # create a global reference to a semantic description of the property
-        semantic_reference = model.Reference(
-            (model.Key(
-                type_=model.KeyElements.GLOBAL_REFERENCE,
-                local=False,
-                value='http://acplt.org/Properties/SimpleProperty',
-                id_type=model.KeyType.IRI
-            ),)
-        )
-        property = model.Property(
-            id_short='ExampleProperty',  # Identifying string of the element within the submodel namespace
-            value_type=model.datatypes.String,  # Data type of the value
-            value='exampleValue',  # Value of the property
-            semantic_id=semantic_reference  # set the semantic reference
-        )
-        submodel.submodel_element.add(property)
-
-        from aas.adapter.xml import write_aas_xml_file
-
-        data: model.DictObjectStore[model.Identifiable] = model.DictObjectStore()
-        data.add(submodel)
-        with open('Simple_Submodel_Agent.xml', 'wb') as f:
-            write_aas_xml_file(file=f, data=data)
-        display_message(self.aid.localname, 'AASX file created!!')
-        '''
-        with open('Simple_Submodel_Agent.xml', 'rb') as xml_file:
-            display_message(self.aid.localname, 'Reading XML file!')
-            xml_file_data = aas.adapter.xml.read_aas_xml_file(xml_file)
-            submodel_from_xml = xml_file_data.get_identifiable(model.Identifier('https://acplt.org/Simple_Submodel',
-                                                                    model.IdentifierType.IRI))
-            display_message(self.aid.localname, 'Submodel from XML ' + str(submodel_from_xml))'''
-
-        call_later(2.0, self.sending_message)
-        temp_behavior = TemporalBehavior(self,5.0)
-        self.behaviours.append(temp_behavior)
+        #call_later(2.0, self.sending_message)
 
     def on_start(self):
         super(ProcessAgent, self).on_start()
-        display_message(self.aid.localname, 'Sending message...')
-        message = ACLMessage(ACLMessage.INFORM)
-        message.set_protocol(ACLMessage.FIPA_CONTRACT_NET_PROTOCOL)
-        message.add_receiver(AID('Resource_Agent_Luis'))
-        message.set_content('Prueba')
-        self.send(message)
-        display_message(self.aid.localname, 'Message sent...')
-        call_later(2.0, self.sending_message)
 
 
     def sending_message(self):
         display_message(self.aid.localname, '(PA) Sending message...')
-        message = ACLMessage(ACLMessage.INFORM)
-        message.set_protocol(ACLMessage.FIPA_CONTRACT_NET_PROTOCOL)
-        message.add_receiver(AID('Resource_Agent_Luis'))
-        message.set_content('Prueba')
-        self.send(message)
-#
+        #message = ACLMessage(ACLMessage.INFORM)
+        #message.set_protocol(ACLMessage.FIPA_CONTRACT_NET_PROTOCOL)
+        #message.add_receiver(AID('Agent_name'))
+        #message.set_content('content')
+        #self.agent.send(message)
+
+    def react(self, message):
+        super(ProcessAgent, self).react(message)
+        display_message(self.aid.localname, '(PA) Message received from {}'.format(message.sender.name))
+
+        display_message(self.aid.localname, '(PA) Message: {}'.format(message.content))
+
 class ResourceAgent(Agent):
     def __init__(self, aid):
         super(ResourceAgent, self).__init__(aid=aid)
+        temp_behavior_ra = TemporalResourceAgentBehavior(self,1.0)
+        self.behaviours.append(temp_behavior_ra)
         display_message(self.aid.localname, 'Resource Agent initialized!')
-        display_message(self.aid.localname, 'Resource Init finalized')
+
+    def on_start(self):
+        super(ResourceAgent, self).on_start()
+
+
+    def sending_message(self):
+        display_message(self.aid.localname, '(RA) Sending message...')
+        #message = ACLMessage(ACLMessage.INFORM)
+        #message.set_protocol(ACLMessage.FIPA_CONTRACT_NET_PROTOCOL)
+        #message.add_receiver(AID('Agent_name'))
+        #message.set_content('content')
+        #self.agent.send(message)
 
     def react(self, message):
         super(ResourceAgent, self).react(message)
@@ -141,20 +372,15 @@ class ResourceAgent(Agent):
 class ManagerAgent(Agent):
     def __init__(self, aid):
         super(ManagerAgent, self).__init__(aid=aid)
+        temp_behavior_ma = TemporalManagerAgentBehavior(self,1.0)
+        self.behaviours.append(temp_behavior_ma)
         display_message(self.aid.localname, 'Manager Agent initialized!')
-        display_message(self.aid.localname, 'Manager Init finalized')
 
 
 
 #Simple Program: 2 agents
 if __name__ == '__main__':
-    agents_per_process = 3
     agents = list()
-    #port = int(argv[1]) + c ## Args
-    port = 20000
-    #agent_process = ProcessAgent(AID(name="Process_Agent_Generic@localhost:{}".format(55200)))
-    #agent_resource = ResourceAgent(AID(name="Resource_Agent_Generic@localhost:{}".format(8100)))
-    #agent_manager = ResourceAgent(AID(name="Manager_Agent_Generic@localhost:{}".format(8200)))
     agent_RATransportB = ResourceAgent(AID(name="Resource_Agent_TransportB@localhost:{}".format(8101)))
     agent_RATransportG = ResourceAgent(AID(name="Resource_Agent_TransportG@localhost:{}".format(8102)))
     agent_RAPickAndPlace = ResourceAgent(AID(name="Resource_Agent_PickAndPlace@localhost:{}".format(8103)))
@@ -166,11 +392,6 @@ if __name__ == '__main__':
     agent_AMSdt1 = ResourceAgent(AID(name="Agent_Manager_dt1@localhost:{}".format(8201)))
     agent_AMSdt2 = ResourceAgent(AID(name="Agent_Manager_dt2@localhost:{}".format(8202)))
     agent_AMSdt3 = ResourceAgent(AID(name="Agent_Manager_dt3@localhost:{}".format(8203)))
-    #agent_process.debug =True
-    #agent_resource.debug =True
-    #agents.append(agent_process)
-    #agents.append(agent_resource)
-    #agents.append(agent_manager)
     agents.append(agent_RATransportB)
     agents.append(agent_RATransportG)
     agents.append(agent_RAPickAndPlace)
@@ -182,62 +403,4 @@ if __name__ == '__main__':
     agents.append(agent_AMSdt1)
     agents.append(agent_AMSdt2)
     agents.append(agent_AMSdt3)
-    #ams_agent_2 = AMS()
-    #agents.append(ams_agent_2)
-    #print(agents)
-
-
-    ## OPC UA Client
-    logging.basicConfig(level=logging.WARN)
-    #logger = logging.getLogger("KeepAlive")
-    #logger.setLevel(logging.DEBUG)
-
-    client = Client("opc.tcp://0.0.0.0:4840/tum/ai40server/")
-    try:
-        client.connect()
-        client.load_type_definitions()  # load definition of server specific structures/extension objects
-
-        # Client has a few methods to get proxy to UA nodes that should always be in address space such as Root or Objects
-        root = client.get_root_node()
-        print("Root node is: ", root)
-        objects = client.get_objects_node()
-        print("Objects node is: ", objects)
-
-        # Node objects have methods to read and write node attributes as well as browse or populate address space
-        print("Children of root are: ", root.get_children())
-
-        # gettting our namespace idx
-        uri = "tum/ai40"
-        idx = client.get_namespace_index(uri)
-
-        # using child definitions
-        generic_node = root.get_child(['0:Objects', '2:ProcessFolder', '2:generic_model_1', '2:generic_analog_variable'])
-
-
-        ## using identifier definition
-        generic_node_2 = client.get_node("ns=2;i=9")
-
-        # subscribing to a variable node
-        handler = SubHandler()
-        sub = client.create_subscription(500, handler)
-        sub.subscribe_data_change(generic_node)
-        sub.subscribe_data_change(generic_node_2)
-
-
-        time.sleep(0.1)
-
-        # we can also subscribe to events from server
-        sub.subscribe_events()
-        # sub.unsubscribe(handle)
-        # sub.delete()
-
-        # calling a method on server
-        #res = obj.call_method("{}:multiply".format(idx), 3, "klk")
-        #print("method result is: ", res)
-
-        # IPython embed to enable interactive shell
-        #embed()
-
-    finally:
-        client.disconnect()
     start_loop(agents)

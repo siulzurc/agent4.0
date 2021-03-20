@@ -71,6 +71,8 @@ if __name__ == "__main__":
         order_model_set_blue_4 = order_model_ua_4.get_child("2:order_model_set_blue")
         order_model_set_blue_4.set_value(11)
 
+        order_model_ua_5.get_child("2:order_model_set_blue")
+
 
         # subscribing to a variable node
         handler = SubHandler()
