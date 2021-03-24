@@ -17,6 +17,7 @@ import gc
 
 ## Serialization
 import pickle
+import pandas as pd
 from pade.acl.messages import ACLMessage
 
 ## OPC UA
@@ -26,7 +27,16 @@ from opcua import ua
 import logging
 import time
 
+## Models - Already trained
+rf_bottles = pickle.load(open('ML_Models/bottles_estimation_model.sav', 'rb'))
+rf_performance = pickle.load(open('ML_Models/performance_estimation_model.sav', 'rb'))
+rf_M1 = pickle.load(open('ML_Models/failure_estimation_model_M1.sav', 'rb'))
+rf_M2 = pickle.load(open('ML_Models/failure_estimation_model_M2.sav', 'rb'))
+rf_M3 = pickle.load(open('ML_Models/failure_estimation_model_M3.sav', 'rb'))
+rf_M4 = pickle.load(open('ML_Models/failure_estimation_model_M4.sav', 'rb'))
 
+## Var inits
+agents = list()
 
 
 ## OPC UA SubHandler
@@ -127,6 +137,9 @@ class SubHandler(object):
         perform_time_value = perform_time_uanode.get_value()
         active_pade_value = active_pade_uanode.get_value()
 
+        if orderWIP:
+            create_process_agent(order_no_value)
+
     def event_notification(self, event):
         print("New event", event)
 
@@ -146,7 +159,7 @@ try:
     print("Children of root are: ", root.get_children())
 
     # gettting our namespace idx
-    uri = ""
+    uri = "urn:luisubuntu-VirtualBox:NodeOPCUA-Server"
     idx = client.get_namespace_index(uri)
 
     ## variables
@@ -210,7 +223,16 @@ finally:
     client.disconnect()
 
 
+## OPCUA event to agent event
+def create_process_agent(order_value):
+    global agents
+    agent_PAProducingB = ProcessAgent(AID(name="Process_Agent_ProducingB_Order{}@localhost:{}".format(order_value,51200 + (order_value-1)*3))) # Instance per order
+    agent_PAProducingG = ProcessAgent(AID(name="Process_Agent_ProducingG_Order{}@localhost:{}".format(order_value,51201 + (order_value-1)*3))) # Instance per order
+    agent_PAProducingO = ProcessAgent(AID(name="Process_Agent_ProducingO_Order{}@localhost:{}".format(order_value,51201 + (order_value-1)*3))) # Instance per order
 
+    agents.append(agent_PAProducingB)
+    agents.append(agent_PAProducingG)
+    agents.append(agent_PAProducingO)
 ########################## Agents ###############################
 
 class TemporalProductAgentBehavior(TimedBehaviour):
@@ -239,6 +261,18 @@ class TemporalProductAgentBehavior(TimedBehaviour):
         global perform_time_value
         global active_pade_value
         display_message(self.agent.aid.localname, '(PA) Temporal Behavior')
+        if "ProducingB" in self.agent.aid.localname:
+            display_message(self.agent.aid.localname, 'Agent Product Blue: set green' + str(set_blue_value) + ", add blue: " + str(add1_value))
+            display_message(self.agent.aid.localname, 'Order no. ' + str(order_no_value) + "," str(achieveB_value) + " blue product achieved")
+        if "ProducingG" in self.agent.aid.localname:
+            display_message(self.agent.aid.localname, 'Agent Product Green: set green' + str(set_green_value) + ", add green: " + str(add2_value))
+            display_message(self.agent.aid.localname, 'Order no. ' + str(order_no_value) + "," str(achieveG_value) + " green product achieved")
+        if "ProducingO" in self.agent.aid.localname:
+            display_message(self.agent.aid.localname, 'Agent Product Order: order no.' + str(order_no_value))
+            display_message(self.agent.aid.localname, 'Order no. ' + str(order_no_value) + "," str(order_achieved_value) + " achieved orders")
+
+
+
         #message = ACLMessage(ACLMessage.INFORM)
         #message.set_protocol(ACLMessage.FIPA_CONTRACT_NET_PROTOCOL)
         #message.add_receiver(AID('Agent_name'))
@@ -273,6 +307,7 @@ class TemporalResourceAgentBehavior(TimedBehaviour):
         global perform_time_value
         global active_pade_value
         display_message(self.agent.aid.localname, '(RA) Temporal Behavior')
+        display_message(self.agent.aid.localname, 'Availability: ' + str(availability_value)+ ", order no. " + str(order_no_value))
         #message = ACLMessage(ACLMessage.INFORM)
         #message.set_protocol(ACLMessage.FIPA_CONTRACT_NET_PROTOCOL)
         #message.add_receiver(AID('Agent_name'))
@@ -287,6 +322,8 @@ class TemporalManagerAgentBehavior(TimedBehaviour):
 
     def on_time(self):
         super(TemporalManagerAgentBehavior,self).on_time()
+        global rf_bottles
+        global rf_performance
         global client
         global set_blue_value
         global set_green_value
@@ -307,6 +344,22 @@ class TemporalManagerAgentBehavior(TimedBehaviour):
         global perform_time_value
         global active_pade_value
         display_message(self.agent.aid.localname, '(MA) Temporal Behavior')
+        display_message(self.agent.aid.localname, 'Performance: ' + str(performance_value) + ", order no. " + str(order_no_value))
+        display_message(self.agent.aid.localname, 'Quality: ' + str(quality_value) + ", order no. " + str(order_no_value))
+        display_message(self.agent.aid.localname, 'OEE: ' + str(oee_value) + ", order no. " + str(order_no_value))
+        display_message(self.agent.aid.localname, 'Perform time: ' + str(perform_time_value) + ", order no. " + str(order_no_value))
+
+        x_data_bottles = pd.DataFrame(data={'SetBlue':set_blue_value,'SetGreen':set_green_value})
+        predicted_added_bottles = rf_bottles.predict(x_data_bottles)
+
+        display_message(self.agent.aid.localname, 'Predicted added bottles: ' + str(predicted_added_bottles))
+
+        x_data_performance = pd.DataFrame(data={'SetBlue':set_blue_value,'SetGreen':set_green_value,'Availability':availability_value,'Add':predicted_added_bottles})
+        predicted_performance = rf_performance.predict(x_data_performance)
+        display_message(self.agent.aid.localname, 'Expected performance : ' + str(predicted_performance))
+
+        ## Probability and estimated time of failure
+        
         #message = ACLMessage(ACLMessage.INFORM)
         #message.set_protocol(ACLMessage.FIPA_CONTRACT_NET_PROTOCOL)
         #message.add_receiver(AID('Agent_name'))
@@ -380,27 +433,27 @@ class ManagerAgent(Agent):
 
 #Simple Program: 2 agents
 if __name__ == '__main__':
-    agents = list()
+
     agent_RATransportB = ResourceAgent(AID(name="Resource_Agent_TransportB@localhost:{}".format(8101)))
     agent_RATransportG = ResourceAgent(AID(name="Resource_Agent_TransportG@localhost:{}".format(8102)))
     agent_RAPickAndPlace = ResourceAgent(AID(name="Resource_Agent_PickAndPlace@localhost:{}".format(8103)))
     agent_RAFillingB = ResourceAgent(AID(name="Resource_Agent_FillingB@localhost:{}".format(8104)))
     agent_RAFillingG = ResourceAgent(AID(name="Resource_Agent_FillingG@localhost:{}".format(8105)))
-    agent_PAProducingB = ResourceAgent(AID(name="Process_Agent_ProducingB@localhost:{}".format(55201)))
-    agent_PAProducingG = ResourceAgent(AID(name="Process_Agent_ProducingG@localhost:{}".format(55202)))
-    agent_PAProducingO = ResourceAgent(AID(name="Process_Agent_ProducingO@localhost:{}".format(55203)))
+    #agent_PAProducingB = ProcessAgent(AID(name="Process_Agent_ProducingB@localhost:{}".format(55201))) # Instance per order
+    #agent_PAProducingG = ProcessAgent(AID(name="Process_Agent_ProducingG@localhost:{}".format(55202))) # Instance per order
+    #agent_PAProducingO = ProcessAgent(AID(name="Process_Agent_ProducingO@localhost:{}".format(55203))) # Instance per order
     agent_AMSdt1 = ResourceAgent(AID(name="Agent_Manager_dt1@localhost:{}".format(8201)))
-    agent_AMSdt2 = ResourceAgent(AID(name="Agent_Manager_dt2@localhost:{}".format(8202)))
-    agent_AMSdt3 = ResourceAgent(AID(name="Agent_Manager_dt3@localhost:{}".format(8203)))
+    #agent_AMSdt2 = ResourceAgent(AID(name="Agent_Manager_dt2@localhost:{}".format(8202)))
+    #agent_AMSdt3 = ResourceAgent(AID(name="Agent_Manager_dt3@localhost:{}".format(8203)))
     agents.append(agent_RATransportB)
     agents.append(agent_RATransportG)
     agents.append(agent_RAPickAndPlace)
     agents.append(agent_RAFillingB)
     agents.append(agent_RAFillingG)
-    agents.append(agent_PAProducingB)
-    agents.append(agent_PAProducingG)
-    agents.append(agent_PAProducingO)
+    #agents.append(agent_PAProducingB)
+    #agents.append(agent_PAProducingG)
+    #agents.append(agent_PAProducingO)
     agents.append(agent_AMSdt1)
-    agents.append(agent_AMSdt2)
-    agents.append(agent_AMSdt3)
+    #agents.append(agent_AMSdt2)
+    #agents.append(agent_AMSdt3)
     start_loop(agents)
