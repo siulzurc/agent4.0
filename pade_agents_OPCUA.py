@@ -3,6 +3,7 @@
 # A simple hello agent in PADE!
 # PADE
 from pade.misc.utility import display_message, start_loop, call_later
+from pade.misc.common import PadeSession
 from pade.core.agent import Agent
 from pade.core.new_ams import AMS
 from pade.acl.aid import AID
@@ -40,7 +41,7 @@ rf_M4 = pickle.load(open('ML_Models/failure_estimation_model_M4.sav', 'rb'))
 
 ## Var inits
 agents = list()
-
+session = PadeSession()
 
 ## OPC UA SubHandler
 
@@ -255,6 +256,7 @@ def check_order_wip():
 ## OPCUA event to agent event
 def create_process_agent(order_value):
     global agents
+    global session
     print("On process agent creation")
     for agent in agents:
         if agent.aid.localname == "Process_Agent_ProducingB_Order{}".format(order_value,51200 + (order_value-1)*3):
@@ -263,8 +265,10 @@ def create_process_agent(order_value):
     agent_PAProducingB = ProcessAgent(AID(name="Process_Agent_ProducingB_Order{}@localhost:{}".format(order_value,51200 + (order_value-1)*3))) # Instance per order
     agent_PAProducingG = ProcessAgent(AID(name="Process_Agent_ProducingG_Order{}@localhost:{}".format(order_value,51201 + (order_value-1)*3))) # Instance per order
 
-    agents.append(agent_PAProducingB)
-    agents.append(agent_PAProducingG)
+    #agents.append(agent_PAProducingB)
+    #agents.append(agent_PAProducingG)
+    session.add_agent(agent_PAProducingB)
+    session.add_agent(agent_PAProducingG)
     #start_loop(agents)
 ########################## Agents ###############################
 
@@ -598,9 +602,10 @@ if __name__ == '__main__':
     #agents.append(agent_PAProducingG)
     #agents.append(agent_PAProducingO)
     agents.append(agent_A40)
+    session.add_all_agents(agents)
     #agents.append(agent_AMSdt2)
     #agents.append(agent_AMSdt3)
     wip_thread = threading.Thread(target=check_order_wip)
     wip_thread.daemon=True
     wip_thread.start()
-    start_loop(agents)
+    session.start_loop()
