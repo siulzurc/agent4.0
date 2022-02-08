@@ -16,4 +16,7 @@ GPL v3.0
 
 # Contact
 Luis ALberto Cruz Salazar (luis.cruz@tum.de)
-Technical University of Munich - Institute of Automation and Information Systems https://www.mec.ed.tum.de/ais
+
+Technical University of Munich,
+
+Institute of Automation and Information Systems https://www.mec.ed.tum.de/ais
