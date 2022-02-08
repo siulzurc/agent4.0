@@ -6,7 +6,7 @@ For the implementation of MARIANNE use PADE(https://pade.readthedocs.io/) and NO
 
 Python 3.7+ is recommended for running the python scripts.
 
-For creating the AASX file AASX explorer(https://github.com/admin-shell-io/aasx-package-explorer/releases/tag/v2020-11-16.alpha) is used. 
+For creating the AASX file, the AASX explorer(https://github.com/admin-shell-io/aasx-package-explorer/releases/tag/v2020-11-16.alpha) is used. 
 
 # Scientific Paper
 Scientific papers (still in the peer-review process) present MARIANNE as an agent-based architecture for Industry 4.0, focusing on Cyber-Physical Production Systems.
