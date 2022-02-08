@@ -1,5 +1,5 @@
 # Agent4.0 (A4.0)
-Source files for the Agent 4.0 and the MARIANNE architecture on Python with PADE
+Source files for the Agent 4.0 and the MARIANNE architecture on Python with PADE.
 
 # Further notes
 For the implementation of MARIANNE use PADE(https://pade.readthedocs.io/) and NOVAAS(https://gitlab.com/gidouninova/novaas).
