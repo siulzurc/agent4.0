@@ -15,8 +15,8 @@ Scientific papers (still in the peer-review process) present MARIANNE as an agen
 GPL v3.0
 
 # Contact
-Luis ALberto Cruz Salazar (luis.cruz@tum.de)
+Luis Alberto Cruz Salazar (luis.cruz@tum.de)
 
-Technical University of Munich,
+Technical University of Munich
 
 Institute of Automation and Information Systems https://www.mec.ed.tum.de/ais
