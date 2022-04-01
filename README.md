@@ -4,8 +4,9 @@ Source files for the Agent 4.0 and the MARIANNE architecture on Python with PADE
 #  MARIANNE content
 src/MARIANNE/: sources for PADE (.py), AASX Package Explorer (.aasx), NOVAAS (.json), and TwinCAT (.tnzip) software tools.
 
-# Industrial Agents instantiation
-src/MARIANNE/.py:
+# Industrial Agents (IAs) instantiation
+src/MARIANNE/: (.py) file, and following lines refers to the IAs used:
+
 
 # Further notes
 For the implementation of MARIANNE use PADE(https://pade.readthedocs.io/) and NOVAAS(https://gitlab.com/gidouninova/novaas).
