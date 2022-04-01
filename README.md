@@ -7,10 +7,10 @@ Source files for the Agent 4.0 and the MARIANNE architecture on Python with PADE
 # Industrial Agents (IAs) classes instantiation 
 *src/MARIANNE/:* (.py) file, and following code lines refers to the IA classes applied (see publications for the concepts):
 
-|       Class I       |           Class II        |       Class III       |
+|  Class I (physical) | Class II (organizational) | Class III (interface) |
 |    -------------    |       -------------       |      -------------    |
 |  *Resource Agent*   | *Agent Management System* | *Communication Agent* |
-|  Lines  259 to 333  |      Lines  9 and 271     |    Lines   30 to 232  |
+|  Lines  259 to 333  |      Lines 9 and 271      |    Lines   30 to 232  |
 |                     |      *Process Agent*      |                       |
 |                     |     Lines  237 to 256     |                       |
 
