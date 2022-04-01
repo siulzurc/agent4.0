@@ -4,20 +4,23 @@ Source files for the Agent 4.0 and the MARIANNE architecture on Python with PADE
 #  MARIANNE content
 *src/MARIANNE/:* sources for PADE (.py), AASX Package Explorer (.aasx), NOVAAS (.json), and TwinCAT (.tnzip) software tools.
 
-# Industrial Agents (IAs) instantiation
-*src/MARIANNE/:* (.py) file, and following code lines refers to the IAs applied:
+# Industrial Agents (IAs) classes instantiation 
+*src/MARIANNE/:* (.py) file, and following code lines refers to the IA classes applied (see publications for the concepts):
 
-|       Class I       |      Class II     |      Class III       |
-|    -------------    |   -------------   |     -------------    |
-|  *Resource Agent*   |  *Process Agent*  | *Comunication Agent* |
-|   Lines  10 to 23   |  Lines  10 to 23  |    Lines  10 to 23   |
+|       Class I       |           Class II        |       Class III       |
+|    -------------    |       -------------       |      -------------    |
+|  *Resource Agent*   | *Agent Management System* | *Communication Agent* |
+|   Lines  10 to 23   |      Lines  10 to 23      |     Lines  10 to 23   |
+|   Lines  10 to 23   |      *Process Agent*      |     Lines  10 to 23   |
+|   Lines  10 to 23   |      Lines  10 to 23      |     Lines  10 to 23   |
+
 
 # Further notes
 - For the implementation of MARIANNE use PADE(https://pade.readthedocs.io/) and NOVAAS(https://gitlab.com/gidouninova/novaas).
 - Python 3.7+ is recommended for running the python scripts.
 - For creating the AASX file, the AASX Package Explorer(https://github.com/admin-shell-io/aasx-package-explorer/releases/tag/v2020-11-16.alpha) is used. 
 
-# Scientific Paper
+# Publications
 Scientific papers (still in the peer-review process) present MARIANNE as an agent-based architecture for Industry 4.0, focusing on Cyber-Physical Production Systems.
 
 # License
