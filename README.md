@@ -9,7 +9,7 @@ Source files for the Agent 4.0 and the MARIANNE architecture on Python with PADE
 
 |       Class I       |      Class II     |      Class III       |
 |    -------------    |   -------------   |     -------------    |
-|   Resource Agent    |   Process Agent   |  Comunication Agent  |
+|  *Resource Agent*   |  *Process Agent*  | *Comunication Agent* |
 |   Lines  10 to 23   |  Lines  10 to 23  |    Lines  10 to 23   |
 
 # Further notes
