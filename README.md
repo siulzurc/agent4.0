@@ -14,7 +14,8 @@ Source files for the Agent 4.0 and the MARIANNE architecture on Python with PADE
 |                     |      *Process Agent*      |                       |
 |                     |    - Lines 237 to 256     |                       |
 
-# Further notes
+# Further notes![GitHubdefinitions](https://user-images.githubusercontent.com/52134410/161299517-3c26a913-fa71-4e68-b7bb-f68684455224.gif)
+
 - For the implementation of MARIANNE use PADE(https://pade.readthedocs.io/) and NOVAAS(https://gitlab.com/gidouninova/novaas).
 - Python 3.7+ is recommended for running the python scripts.
 - For creating the AASX file, the AASX Package Explorer(https://github.com/admin-shell-io/aasx-package-explorer/releases/tag/v2020-11-16.alpha) is used. 
