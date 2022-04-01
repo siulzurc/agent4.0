@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
 # Realized by Luis Alberto Cruz Salazar - Technical University of Munich 07/05/2021
 # FIPA Contract Net Protocol for agents' Call of Proposals (CFPs)
-# Example of Initial FIPA-CNP behaviour that sends CFP messages between a Process agent (PA) and two
-# Resource agents (RA), which are asking for restoration proposals.
-# This example behaviour also analyzes the CFPs and selects the one it judges to be the best.
+# Example of Initial FIPA-CNP behaviour that sends CFP messages between a Process agent (PA) and Resource agents (RA), which are asking for restoration proposals.
+# The Communication agents (CA) are used to analyze CFPs and selects the one it judges to be the best, based on FIPA protocol.
+# Code implements the Agent Management System (AMS)  from FIPA and its behaviors.
 # Source" Adapted from: https://pade.readthedocs.io/en
 
+from pade.misc.common import set_ams, start_loop
 from pade.misc.utility import display_message, start_loop
 from pade.core.agent import Agent
 from pade.acl.aid import AID
@@ -18,7 +19,6 @@ from opcua import ua
 import time
 #from opcua import CryptographyNone
 #from opcua import SecurityPolicy
-
 #from opcua.crypto import security_policies
 
 '''#Setting and conecting OPC UA client with NONE Security
