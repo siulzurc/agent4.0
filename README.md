@@ -20,7 +20,7 @@ Source files for the Agent 4.0 and the MARIANNE architecture on Python with PADE
 - For creating the AASX file, the AASX Package Explorer (https://github.com/admin-shell-io/aasx-package-explorer/releases/tag/v2020-11-16.alpha) is used. 
 
 # Related definitions
-[NormalizedDefinitions](https://user-images.githubusercontent.com/52134410/161299517-3c26a913-fa71-4e68-b7bb-f68684455224.gif)
+[NormalizedDefinitionsList](https://user-images.githubusercontent.com/52134410/161299517-3c26a913-fa71-4e68-b7bb-f68684455224.gif)
 
 # Publications
 Scientific papers (still in the peer-review process) present MARIANNE as an agent-based architecture for Industry 4.0, focusing on Cyber-Physical Production Systems.
