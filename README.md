@@ -5,7 +5,7 @@ Source files for the Agent 4.0 and the MARIANNE architecture on Python with PADE
 *src/MARIANNE/:* sources for PADE (.py), AASX Package Explorer (.aasx), NOVAAS (.json), and TwinCAT (.tnzip) software tools.
 
 # Industrial Agents (IAs) classes instantiation 
-*src/MARIANNE/:* (.py) file, and following code lines refers to the IA classes applied (see publications for the concepts):
+*src/MARIANNE/:* (.py) file, and the following code lines refer to the IA classes applied (see publications for the concepts):
 
 |  Class I (physical) | Class II (organizational) | Class III (interface) |
 |    -------------    |       -------------       |      -------------    |
