@@ -255,7 +255,6 @@ class AgentInitiator(Agent):
         self.behaviours.append(comp)
         comp.on_start()
 
-
 class AgentParticipant(Agent):
 
     def __init__(self, aid, pot_disp):
@@ -269,6 +268,7 @@ class AgentParticipant(Agent):
 
 var10 = activePADE.get_value()
 if __name__ == "__main__" and var10 == True:
+    set_ams('localhost', 8000)
     agents_per_process = 1
     c = 0
     agents = list()
