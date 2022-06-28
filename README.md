@@ -25,6 +25,11 @@ Source files for the Agent 4.0 and the MARIANNE architecture on Python with PADE
 # Publications
 Scientific papers (still in the peer-review process) present MARIANNE as an agent-based architecture for Industry 4.0, focusing on Cyber-Physical Production Systems.
 
+* L. A. Cruz S. and B. Vogel‐Heuser, “Industrial Artificial Intelligence: A Predictive Agent Concept for Industry 4.0,” in 20th International Conference on Industrial Informatics (INDIN), 2022, pp. 1–6.
+* L. A. Cruz S. and B. Vogel-Heuser, “A CPPS-architecture and workflow for bringing agent-based technologies as a form of artificial intelligence into practice,” - Autom., vol. 70, no. 6, pp. 580–598, Jun. 2022, doi: 10.1515/auto-2022-0008. Available Open Acces online: https://www.degruyter.com/document/doi/10.1515/auto-2022-0008/html
+
+
+
 # License
 GPL v3.0
 
