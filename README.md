@@ -36,6 +36,6 @@ GPL v3.0
 # Contact
 Luis Alberto Cruz Salazar (luicruz@uan.edu.co)
 
-Universidad Antonio Nariño
+Universidad Antonio Nariño, 
 Facultad de Ingeniería Mecánica, Electrónica y Biomédica (FIMEB)
 https://www.uan.edu.co
