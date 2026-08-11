@@ -1,5 +1,5 @@
 # MARIANNE and the Industrial Agent for I4.0 (Agent4.0)
-Source files for the Agent 4.0 and the MARIANNE architecture on Python with PADE.
+Source files for the Agent 4.0 and the MARIANNE architecture in Python with PADE.
 
 #  MARIANNE content
 *src/MARIANNE/:* sources for PADE (.py), AASX Package Explorer (.aasx), NOVAAS (.json), and TwinCAT (.tnzip) software tools.
@@ -34,8 +34,8 @@ Scientific papers (still in the peer-review process) present MARIANNE as an agen
 GPL v3.0
 
 # Contact
-Luis Alberto Cruz Salazar (luis.cruz@tum.de)
+Luis Alberto Cruz Salazar (luicruz@uan.edu.co)
 
-Technical University of Munich
-
-Institute of Automation and Information Systems https://www.mec.ed.tum.de/ais
+Universidad Antonio Nariño
+Facultad de Ingeniería Mecánica, Electrónica y Biomédica (FIMEB)
+https://www.uan.edu.co
